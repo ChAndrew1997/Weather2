@@ -37,17 +37,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        findMyLocation();
-
 
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 refreshLayout.setRefreshing(true);
-                App.downloadWeather(MainActivity.this);
+
+                findMyLocation();
+
+/*
                 Toast.makeText(MainActivity.this, "End", Toast.LENGTH_SHORT).show();
                 refreshLayout.setRefreshing(false);
+*/
             }
         });
 
@@ -61,7 +63,12 @@ public class MainActivity extends AppCompatActivity {
     private LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            setLocation(location);
+
+            if (location != null) {
+                App.downloadWeather(MainActivity.this, location.getLatitude(), location.getLongitude());
+                refreshLayout.setRefreshing(false);
+            }
+
             locationManager.removeUpdates(locationListener);
         }
 
@@ -78,12 +85,7 @@ public class MainActivity extends AppCompatActivity {
         public void onStatusChanged(String provider, int status, Bundle extras) {
         }
     };
-    private void setLocation(Location location) {
-        if (location != null) {
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-        }
-    }
+
     private void findMyLocation(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

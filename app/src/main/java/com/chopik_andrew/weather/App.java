@@ -52,6 +52,8 @@ public class App extends Application {
 
     }
 
+
+
     public static void writeDB(Context context){
 
         dbHelper = new DBHelper(context);
@@ -86,14 +88,14 @@ public class App extends Application {
         dbHelper.close();
     }
 
-    public static void downloadWeather(final Context context){
+    public static void downloadWeather(final Context context, final double lat, final double lon){
 
         date = new ArrayList<>();
         temp = new ArrayList<>();
         desc = new ArrayList<>();
         clouds = new ArrayList<>();
 
-        fiveDaysWeatherAPI.getData(55.4, 55.7, "a84d20ba16e63145fec0b712d6547707").enqueue(new Callback<FiveDaysWeatherModel>() {
+        fiveDaysWeatherAPI.getData(lat, lon, "a84d20ba16e63145fec0b712d6547707").enqueue(new Callback<FiveDaysWeatherModel>() {
             @Override
             public void onResponse(Call<FiveDaysWeatherModel> call, Response<FiveDaysWeatherModel> response) {
                 city = response.body().getCity().getName();
@@ -104,7 +106,7 @@ public class App extends Application {
                     clouds.add(response.body().getList().get(i).getClouds().getAll());
                 }
 
-                sixteenDaysWeatherAPI.getData(55.4, 55.7, 16, "a84d20ba16e63145fec0b712d6547707").enqueue(new Callback<SixteenDaysWeatherModel>() {
+                sixteenDaysWeatherAPI.getData(lat, lon, 16, "a84d20ba16e63145fec0b712d6547707").enqueue(new Callback<SixteenDaysWeatherModel>() {
                     @Override
                     public void onResponse(Call<SixteenDaysWeatherModel> call, Response<SixteenDaysWeatherModel> response) {
 
