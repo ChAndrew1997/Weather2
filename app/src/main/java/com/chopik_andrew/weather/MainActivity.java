@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 refreshLayout.setRefreshing(true);
-                App.writeDB(MainActivity.this);
+                App.downloadWeather(MainActivity.this);
                 Toast.makeText(MainActivity.this, "End", Toast.LENGTH_SHORT).show();
                 refreshLayout.setRefreshing(false);
             }

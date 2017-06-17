@@ -10,6 +10,8 @@ import android.util.Log;
 import com.chopik_andrew.weather.weatherApiFiveDays.FiveDaysWeatherAPI;
 import com.chopik_andrew.weather.weatherApiFiveDays.FiveDaysWeatherModel;
 
+import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,11 +28,11 @@ public class App extends Application {
     private Retrofit retrofit;
     private static DBHelper dbHelper;
 
-    private String city;
-    private int date;
-    private double temp;
-    private String desc;
-    private double clouds;
+    private static String city;
+    private static ArrayList<Integer> date;
+    private static ArrayList<Double> temp;
+    private static ArrayList<String> desc;
+    private static ArrayList<Integer> clouds;
 
 
     @Override
@@ -51,13 +53,13 @@ public class App extends Application {
         ContentValues cv = new ContentValues();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-       /* for(int i = 0; i < 10; i++){
-            cv.put("city", "Minsk");
-            cv.put("date", 1221 + i);
-            cv.put("temp", 25);
-            cv.put("desc", "frost");
-            cv.put("clouds", 54);
-            db.insert("mytable", null, cv);
+        for(int i = 0; i < date.size(); i++){
+            cv.put("city", city);
+            cv.put("date", date.get(i));
+            cv.put("temp", temp.get(i));
+            cv.put("desc", desc.get(i));
+            cv.put("clouds", clouds.get(i));
+            db.update("mytable", cv, "id = " + Integer.toString(i + 1), null);
             cv.clear();
         }
 
@@ -75,21 +77,35 @@ public class App extends Application {
             } while (cursor.moveToNext());
         }
 
-        Log.d("table", "deleted rows count = " + db.delete("mytable", null, null));
-
-        cursor.close();*/
+        cursor.close();
         dbHelper.close();
     }
 
-    private void getApi(){
+    public static void downloadWeather(final Context context){
+
+        date = new ArrayList<>();
+        temp = new ArrayList<>();
+        desc = new ArrayList<>();
+        clouds = new ArrayList<>();
 
         fiveDaysWeatherAPI.getData(55.4, 55.7, "a84d20ba16e63145fec0b712d6547707").enqueue(new Callback<FiveDaysWeatherModel>() {
             @Override
             public void onResponse(Call<FiveDaysWeatherModel> call, Response<FiveDaysWeatherModel> response) {
+                city = response.body().getCity().getName();
+                for(int i = 0; i < response.body().getList().size(); i++){
+                    date.add(response.body().getList().get(i).getDt());
+                    temp.add(response.body().getList().get(i).getMain().getTemp());
+                    desc.add(response.body().getList().get(i).getWeather().get(0).getMain());
+                    clouds.add(response.body().getList().get(i).getClouds().getAll());
+                }
+
+                writeDB(context);
+
             }
 
             @Override
             public void onFailure(Call<FiveDaysWeatherModel> call, Throwable t) {
+
             }
         });
 
