@@ -26,17 +26,6 @@ public class TodayFrag extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        App.getApi().getData(55.4, 55.7, "a84d20ba16e63145fec0b712d6547707").enqueue(new Callback<FiveDaysWeatherModel>() {
-            @Override
-            public void onResponse(Call<FiveDaysWeatherModel> call, Response<FiveDaysWeatherModel> response) {
-                list[0] = response.body().getCity().getName();
-            }
-
-            @Override
-            public void onFailure(Call<FiveDaysWeatherModel> call, Throwable t) {
-                list[0] = t.getMessage();
-            }
-        });
     }
 
     @Override
