@@ -11,10 +11,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private double longitude;
     private LocationManager locationManager;
     PagerAdapter pagerAdapter;
+    SwipeRefreshLayout refreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,16 @@ public class MainActivity extends AppCompatActivity {
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         findMyLocation();
+
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshLayout.setRefreshing(true);
+                Toast.makeText(MainActivity.this, "End", Toast.LENGTH_SHORT).show();
+                refreshLayout.setRefreshing(false);
+            }
+        });
 
         pager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
