@@ -6,9 +6,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.chopik_andrew.weather.weatherApiFiveDays.FiveDaysWeatherAPI;
 import com.chopik_andrew.weather.weatherApiFiveDays.FiveDaysWeatherModel;
+import com.chopik_andrew.weather.weatherApiSixteenDays.SixteenDaysWeatherAPI;
+import com.chopik_andrew.weather.weatherApiSixteenDays.SixteenDaysWeatherModel;
 
 import java.util.ArrayList;
 
@@ -25,6 +28,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class App extends Application {
     private static FiveDaysWeatherAPI fiveDaysWeatherAPI;
+    private static SixteenDaysWeatherAPI sixteenDaysWeatherAPI;
     private Retrofit retrofit;
     private static DBHelper dbHelper;
 
@@ -43,7 +47,8 @@ public class App extends Application {
                 .baseUrl("http://api.openweathermap.org/") //Базовая часть адреса
                 .addConverterFactory(GsonConverterFactory.create()) //Конвертер, необходимый для преобразования JSON'а в объекты
                 .build();
-        fiveDaysWeatherAPI = retrofit.create(FiveDaysWeatherAPI.class); //Создаем объект, при помощи которого будем выполнять запросы
+        fiveDaysWeatherAPI = retrofit.create(FiveDaysWeatherAPI.class);
+        sixteenDaysWeatherAPI = retrofit.create(SixteenDaysWeatherAPI.class);
 
     }
 
@@ -99,16 +104,30 @@ public class App extends Application {
                     clouds.add(response.body().getList().get(i).getClouds().getAll());
                 }
 
-                writeDB(context);
+                sixteenDaysWeatherAPI.getData(55.4, 55.7, 16, "a84d20ba16e63145fec0b712d6547707").enqueue(new Callback<SixteenDaysWeatherModel>() {
+                    @Override
+                    public void onResponse(Call<SixteenDaysWeatherModel> call, Response<SixteenDaysWeatherModel> response) {
 
+                        for(int i = 0; i < response.body().getList().size(); i++){
+                            date.add(response.body().getList().get(i).getDt());
+                            temp.add(response.body().getList().get(i).getTemp().getDay());
+                            desc.add(response.body().getList().get(i).getWeather().get(0).getMain());
+                            clouds.add(response.body().getList().get(i).getClouds());
+                        }
+
+                        writeDB(context);
+                    }
+
+                    @Override
+                    public void onFailure(Call<SixteenDaysWeatherModel> call, Throwable t) {
+                        Toast.makeText(context, t.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
-
             @Override
             public void onFailure(Call<FiveDaysWeatherModel> call, Throwable t) {
 
             }
         });
-
     }
-
 }

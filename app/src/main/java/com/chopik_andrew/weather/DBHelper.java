@@ -31,7 +31,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         ContentValues cv = new ContentValues();
 
-        for(int i = 0; i < 35; i++){
+        for(int i = 0; i < 60; i++){
             cv.put("city", "Update Page");
             cv.put("date", 1221 + i);
             cv.put("temp", 25);
