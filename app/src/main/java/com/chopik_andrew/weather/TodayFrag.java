@@ -3,6 +3,7 @@ package com.chopik_andrew.weather;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,6 @@ public class TodayFrag extends Fragment {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -33,10 +33,10 @@ public class TodayFrag extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.today_frag, null);
         listView = (ListView) view.findViewById(R.id.today_list);
-
-
         MyTodayListAdapter listAdapter = new MyTodayListAdapter(getContext(), list);
         listView.setAdapter(listAdapter);
+
+
         return view;
     }
 

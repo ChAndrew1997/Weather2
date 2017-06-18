@@ -7,6 +7,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
 /**
  * Created by Andrew on 15.06.2017.
  */
@@ -15,22 +19,23 @@ public class MyMainListAdapter extends BaseAdapter {
 
     Context ctx;
     LayoutInflater lInflater;
-    String[] objects;
+    ArrayList<ListModel> list;
+    SimpleDateFormat dateFormat;
 
-    public MyMainListAdapter(Context context, String[] objects){
+    public MyMainListAdapter(Context context, ArrayList<ListModel> list){
         ctx = context;
-        this.objects = objects;
+        this.list = list;
         lInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public int getCount() {
-        return objects.length;
+            return list.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return objects[position];
+        return list.get(position);
     }
 
     @Override
@@ -44,7 +49,10 @@ public class MyMainListAdapter extends BaseAdapter {
         if (view == null) {
             view = lInflater.inflate(R.layout.main_list_item, parent, false);
         }
-        ((TextView) view.findViewById(R.id.text_item)).setText(objects[position]);
+        dateFormat = new SimpleDateFormat("yyyy.MM.dd");
+        String formattedDate = dateFormat.format(new Date(list.get(position).getDate() * 1000L));
+        ((TextView) view.findViewById(R.id.text_item)).setText(formattedDate);
+        ((TextView) view.findViewById(R.id.temp)).setText(Integer.toString((int) list.get(position).getTemp() - 273));
 
         return view;
     }

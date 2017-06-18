@@ -85,7 +85,7 @@ public class App extends Application {
                 String formated = format.format(new Date(cursor.getInt(cursor.getColumnIndex("date")) * 1000L));
                 Log.d("table", "ID = " + cursor.getInt(cursor.getColumnIndex("id")) +
                         ", city = " + cursor.getString(cursor.getColumnIndex("city")) +
-                        ", date = " + /*cursor.getInt(cursor.getColumnIndex("date"))*/ formated +
+                        ", date = " + cursor.getInt(cursor.getColumnIndex("date")) +
                         ", temp = " + cursor.getDouble(cursor.getColumnIndex("temp")) +
                         ", desc = " + cursor.getString(cursor.getColumnIndex("desc")) +
                         ", clouds = " + cursor.getDouble(cursor.getColumnIndex("clouds")) +

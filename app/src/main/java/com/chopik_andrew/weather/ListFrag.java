@@ -20,8 +20,6 @@ public class ListFrag extends Fragment {
     int pageNumber;
     ListView listView;
     MyMainListAdapter listAdapter;
-    final String[] fiveDays = {"1", "2", "3", "4", "5"};
-    final String[] sixteenDays = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16"};
 
     static ListFrag newInstance(int page) {
         ListFrag listFrag = new ListFrag();
@@ -44,10 +42,11 @@ public class ListFrag extends Fragment {
 
         listView = (ListView) view.findViewById(R.id.list_main);
 
-        if (pageNumber == 1)
-            listAdapter = new MyMainListAdapter(getContext(), fiveDays);
+        if(pageNumber == 1)
+            listAdapter = new MyMainListAdapter(getContext(), new DBConnect(getContext()).getList(5));
         else
-            listAdapter = new MyMainListAdapter(getContext(), sixteenDays);
+            listAdapter = new MyMainListAdapter(getContext(), new DBConnect(getContext()).getList(16));
+
         listView.setAdapter(listAdapter);
 
         return view;

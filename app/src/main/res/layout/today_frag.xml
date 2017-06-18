@@ -1,12 +1,12 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp">
-    <ListView
-        android:id="@+id/today_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </ListView>
+
+
+        <ListView
+            android:id="@+id/today_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></ListView>
 </RelativeLayout>
