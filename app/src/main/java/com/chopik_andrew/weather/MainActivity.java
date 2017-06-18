@@ -1,6 +1,7 @@
 package com.chopik_andrew.weather;
 
 import android.Manifest;
+import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -9,7 +10,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     ViewPager pager;
     private LocationManager locationManager;
     PagerAdapter pagerAdapter;
-    SwipeRefreshLayout refreshLayout;
 
 
     @Override
@@ -38,25 +37,12 @@ public class MainActivity extends AppCompatActivity {
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshLayout.setRefreshing(true);
-
-                findMyLocation();
-
-/*
-                Toast.makeText(MainActivity.this, "End", Toast.LENGTH_SHORT).show();
-                refreshLayout.setRefreshing(false);
-*/
-            }
-        });
 
         pager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new MyPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
         pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener());
+
     }
 
 
@@ -66,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
 
             if (location != null) {
                 App.downloadWeather(MainActivity.this, location.getLatitude(), location.getLongitude());
-                refreshLayout.setRefreshing(false);
             }
 
             locationManager.removeUpdates(locationListener);
@@ -86,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void findMyLocation(){
+    public void findMyLocation(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;

@@ -21,6 +21,9 @@ import retrofit2.Response;
  */
 public class TodayFrag extends Fragment {
 
+    SwipeRefreshLayout refreshLayout;
+    MainActivity activity;
+
     ListView listView;
     String[] list = {"Сегодня", "Завтра"};
 
@@ -35,7 +38,22 @@ public class TodayFrag extends Fragment {
         listView = (ListView) view.findViewById(R.id.today_list);
         MyTodayListAdapter listAdapter = new MyTodayListAdapter(getContext(), list);
         listView.setAdapter(listAdapter);
+        activity = (MainActivity) getActivity();
 
+        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshLayout.setRefreshing(true);
+
+                activity.findMyLocation();
+                refreshLayout.setRefreshing(false);
+/*
+                Toast.makeText(MainActivity.this, "End", Toast.LENGTH_SHORT).show();
+                refreshLayout.setRefreshing(false);
+*/
+            }
+        });
 
         return view;
     }
