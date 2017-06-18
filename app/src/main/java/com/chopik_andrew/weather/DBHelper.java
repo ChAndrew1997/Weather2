@@ -15,7 +15,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public DBHelper(Context context) {
-        // конструктор суперкласса
         super(context, "myDB", null, 1);
     }
     @Override
@@ -26,7 +25,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 + "date integer,"
                 + "temp real,"
                 + "desc text,"
-                + "clouds real"
+                + "clouds real,"
+                + "count integer"
                 + ");");
 
         ContentValues cv = new ContentValues();
@@ -37,6 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
             cv.put("temp", 25);
             cv.put("desc", "frost");
             cv.put("clouds", 54);
+            cv.put("count", 40);
             db.insert("mytable", null, cv);
             cv.clear();
         }
@@ -50,7 +51,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         ", date = " + cursor.getInt(cursor.getColumnIndex("date")) +
                         ", temp = " + cursor.getDouble(cursor.getColumnIndex("temp")) +
                         ", desc = " + cursor.getString(cursor.getColumnIndex("desc")) +
-                        ", clouds = " + cursor.getDouble(cursor.getColumnIndex("clouds"))
+                        ", clouds = " + cursor.getDouble(cursor.getColumnIndex("clouds")) +
+                        ", count = " + cursor.getInt(cursor.getColumnIndex("count"))
                 );
             } while (cursor.moveToNext());
         }

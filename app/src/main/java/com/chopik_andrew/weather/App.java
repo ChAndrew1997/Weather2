@@ -13,7 +13,9 @@ import com.chopik_andrew.weather.weatherApiFiveDays.FiveDaysWeatherModel;
 import com.chopik_andrew.weather.weatherApiSixteenDays.SixteenDaysWeatherAPI;
 import com.chopik_andrew.weather.weatherApiSixteenDays.SixteenDaysWeatherModel;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,6 +39,9 @@ public class App extends Application {
     private static ArrayList<Double> temp;
     private static ArrayList<String> desc;
     private static ArrayList<Integer> clouds;
+    private static int count;
+
+    private static SimpleDateFormat format;
 
 
     @Override
@@ -60,12 +65,15 @@ public class App extends Application {
         ContentValues cv = new ContentValues();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
+        format= new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z");
+
         for(int i = 0; i < date.size(); i++){
             cv.put("city", city);
             cv.put("date", date.get(i));
             cv.put("temp", temp.get(i));
             cv.put("desc", desc.get(i));
             cv.put("clouds", clouds.get(i));
+            cv.put("count", count);
             db.update("mytable", cv, "id = " + Integer.toString(i + 1), null);
             cv.clear();
         }
@@ -74,12 +82,14 @@ public class App extends Application {
 
         if(cursor.moveToFirst()){
             do{
+                String formated = format.format(new Date(cursor.getInt(cursor.getColumnIndex("date")) * 1000L));
                 Log.d("table", "ID = " + cursor.getInt(cursor.getColumnIndex("id")) +
                         ", city = " + cursor.getString(cursor.getColumnIndex("city")) +
-                        ", date = " + cursor.getInt(cursor.getColumnIndex("date")) +
+                        ", date = " + /*cursor.getInt(cursor.getColumnIndex("date"))*/ formated +
                         ", temp = " + cursor.getDouble(cursor.getColumnIndex("temp")) +
                         ", desc = " + cursor.getString(cursor.getColumnIndex("desc")) +
-                        ", clouds = " + cursor.getDouble(cursor.getColumnIndex("clouds"))
+                        ", clouds = " + cursor.getDouble(cursor.getColumnIndex("clouds")) +
+                        ", count = " + cursor.getInt(cursor.getColumnIndex("count"))
                 );
             } while (cursor.moveToNext());
         }
@@ -99,6 +109,7 @@ public class App extends Application {
             @Override
             public void onResponse(Call<FiveDaysWeatherModel> call, Response<FiveDaysWeatherModel> response) {
                 city = response.body().getCity().getName();
+                count = response.body().getCnt();
                 for(int i = 0; i < response.body().getList().size(); i++){
                     date.add(response.body().getList().get(i).getDt());
                     temp.add(response.body().getList().get(i).getMain().getTemp());
