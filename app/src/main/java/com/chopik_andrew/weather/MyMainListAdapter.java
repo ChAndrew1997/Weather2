@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -53,6 +54,17 @@ public class MyMainListAdapter extends BaseAdapter {
         String formattedDate = dateFormat.format(new Date(list.get(position).getDate() * 1000L));
         ((TextView) view.findViewById(R.id.text_item)).setText(formattedDate);
         ((TextView) view.findViewById(R.id.temp)).setText(Integer.toString((int) list.get(position).getTemp() - 273));
+        switch (list.get(position).getDesc()){
+            case "Rain":
+                ((ImageView) view.findViewById(R.id.main_list_item_image)).setImageResource(R.drawable.rain);
+                break;
+            case "Clear":
+                ((ImageView) view.findViewById(R.id.main_list_item_image)).setImageResource(R.drawable.sun);
+                break;
+            case "Clouds":
+                ((ImageView) view.findViewById(R.id.main_list_item_image)).setImageResource(R.drawable.cloudy);
+                break;
+        }
 
         return view;
     }
