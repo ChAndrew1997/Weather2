@@ -58,8 +58,12 @@ public class DBConnect {
         return date;
     }
 
-    public ArrayList<Double> getTemp() {
-        return temp;
+    public double[] getTemp() {
+        double[] temperature = new double[temp.size()];
+        for (int i = 0; i < temp.size(); i++) {
+            temperature[i] = temp.get(i);
+        }
+        return temperature;
     }
 
     public ArrayList<String> getDesc() {
