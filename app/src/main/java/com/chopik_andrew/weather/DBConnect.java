@@ -88,6 +88,15 @@ public class DBConnect {
 
         return list;
     }
+    public ArrayList<ListModel> getFiveDaysList(){
+        ArrayList<ListModel> list = new ArrayList<>();
+
+        for(int i = 0; i < count; i++){
+            list.add(new ListModel(city, date.get(i), temp.get(i), desc.get(i), clouds.get(i)));
+        }
+
+        return list;
+    }
 }
 
 class ListModel{

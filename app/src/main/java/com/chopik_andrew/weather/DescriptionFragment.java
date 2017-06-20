@@ -3,6 +3,8 @@ package com.chopik_andrew.weather;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -26,10 +29,12 @@ public class DescriptionFragment extends Fragment {
     TextView temp;
     TextView desc;
     TextView clouds;
+    RecyclerView recyclerView;
 
     SimpleDateFormat dateFormat;
 
-    DescriptionActivity activity;
+    DBConnect dbConnect;
+
 
     static DescriptionFragment newInstance(int page) {
         DescriptionFragment descriptionFragment = new DescriptionFragment();
@@ -50,23 +55,30 @@ public class DescriptionFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_description, null);
 
-        activity = (DescriptionActivity) getActivity();
         date = (TextView) view.findViewById(R.id.description_date);
         image = (ImageView) view.findViewById(R.id.description_image);
         temp = (TextView) view.findViewById(R.id.description_temp);
         desc = (TextView) view.findViewById(R.id.description);
         clouds = (TextView) view.findViewById(R.id.clouds);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler);
+
+        dbConnect = new DBConnect(getContext());
+
+        LinearLayoutManager llm = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(llm);
+        RecyclerAdapter  adapter = new RecyclerAdapter(divideFiveDaysListModel(dbConnect.getFiveDaysList()));
+        recyclerView.setAdapter(adapter);
 
         dateFormat = new SimpleDateFormat("yyyy.MM.dd");
-        String pageDate = dateFormat.format(new Date(activity.getDate().get(activity.getCount() + pageNumber) * 1000L));
-        String pageTemp = Integer.toString((int) activity.getTemp()[activity.getCount() + pageNumber] - 273);
-        String pageClouds = Integer.toString(activity.getClouds().get(activity.getCount() + pageNumber));
+        String pageDate = dateFormat.format(new Date(dbConnect.getDate().get(dbConnect.getCount() + pageNumber) * 1000L));
+        String pageTemp = Integer.toString((int) dbConnect.getTemp()[dbConnect.getCount() + pageNumber] - 273);
+        String pageClouds = Integer.toString(dbConnect.getClouds().get(dbConnect.getCount() + pageNumber));
 
         date.setText(pageDate);
         temp.setText(pageTemp);
         clouds.setText("Облачность " + pageClouds + "%");
 
-        switch (activity.getDesc().get(activity.getCount() + pageNumber)){
+        switch (dbConnect.getDesc().get(dbConnect.getCount() + pageNumber)){
             case "Rain":
                 image.setImageResource(R.drawable.rain);
                 desc.setText("Дождь");
@@ -83,6 +95,27 @@ public class DescriptionFragment extends Fragment {
 
 
         return view;
+    }
+
+    private ArrayList<ListModel> divideFiveDaysListModel(ArrayList<ListModel> fiveDays){
+        dateFormat = new SimpleDateFormat("yyyy.MM.dd");
+        ArrayList<ListModel> oneDay = new ArrayList<>();
+        int page = pageNumber;
+
+        for (int i = 0; i < fiveDays.size(); i++){
+            if(page == 0) {
+                oneDay.add(fiveDays.get(i));
+            }
+            if(fiveDays.size() == i + 1){
+                break;
+            }
+            if (!dateFormat.format(new Date(fiveDays.get(i).getDate() * 1000L)).equals(dateFormat.format(new Date(fiveDays.get(i + 1).getDate() * 1000L)))){
+                page--;
+                if (page < 0)
+                    break;
+            }
+        }
+        return oneDay;
     }
 
 }

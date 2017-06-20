@@ -29,8 +29,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class App extends Application {
-    private static FiveDaysWeatherAPI fiveDaysWeatherAPI;
-    private static SixteenDaysWeatherAPI sixteenDaysWeatherAPI;
+    public static FiveDaysWeatherAPI fiveDaysWeatherAPI;
+    public static SixteenDaysWeatherAPI sixteenDaysWeatherAPI;
     private Retrofit retrofit;
     private static DBHelper dbHelper;
 
@@ -41,6 +41,8 @@ public class App extends Application {
     private static ArrayList<Integer> clouds;
     private static int count;
 
+    public static final String BASE_URL = "http://api.openweathermap.org/";
+
     private static SimpleDateFormat format;
 
 
@@ -49,11 +51,13 @@ public class App extends Application {
         super.onCreate();
 
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://api.openweathermap.org/") //Базовая часть адреса
+                .baseUrl(BASE_URL) //Базовая часть адреса
                 .addConverterFactory(GsonConverterFactory.create()) //Конвертер, необходимый для преобразования JSON'а в объекты
                 .build();
         fiveDaysWeatherAPI = retrofit.create(FiveDaysWeatherAPI.class);
         sixteenDaysWeatherAPI = retrofit.create(SixteenDaysWeatherAPI.class);
+
+        WeatherApiManager.getInstance().init(this);
 
     }
 

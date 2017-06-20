@@ -55,6 +55,23 @@ public class TodayFrag extends Fragment {
             }
         });
 
+        WeatherApiManager.getInstance().downloadWeather(getContext(), 0.0, 0.0, new WeatherApiManager.LodWeatherListener() {
+            @Override
+            public void start() {
+
+            }
+
+            @Override
+            public void success() {
+
+            }
+
+            @Override
+            public void failure() {
+
+            }
+        });
+
         return view;
     }
 
